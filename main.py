@@ -1,6 +1,4 @@
-import serialStuff
 import landingWindow
-import graphWindow
 
 import time
 import sys
@@ -28,13 +26,11 @@ if __name__ == "__main__":
 
     widget = QtWidgets.QStackedWidget()
 
-    # initialize the other windows
+    # initialize the landing page
     main_window = landingWindow.landingWindow(widget=widget)
-    graph_window = graphWindow.graphWindow()
-
+    
     # 
     widget.addWidget(main_window)
-    widget.addWidget(graph_window)
     widget.setFixedHeight(640)
     widget.setFixedWidth(800)
 
