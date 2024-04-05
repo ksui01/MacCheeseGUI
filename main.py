@@ -6,8 +6,7 @@ import time
 import sys
 from random import randint
 
-import pyqtgraph as pg
-from PyQt6.uic import loadUi
+
 from PyQt6 import QtWidgets, QtCore
 
 
@@ -29,8 +28,11 @@ if __name__ == "__main__":
 
     widget = QtWidgets.QStackedWidget()
 
-    main_window = landingWindow.landingWindow()
+    # initialize the other windows
+    main_window = landingWindow.landingWindow(widget=widget)
     graph_window = graphWindow.graphWindow()
+
+    # 
     widget.addWidget(main_window)
     widget.addWidget(graph_window)
     widget.setFixedHeight(640)
