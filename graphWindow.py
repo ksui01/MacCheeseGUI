@@ -8,6 +8,7 @@ from PyQt6 import QtWidgets, QtCore
 from PyQt6.QtCore import QTimer
 
 import pyqtgraph as pg
+from pyqtgraph import InfiniteLine, TextItem
 
 class graphWindow(QtWidgets.QMainWindow):
   def __init__(self, widget=None, ser=None, *args, **kwargs):
@@ -59,14 +60,14 @@ class graphWindow(QtWidgets.QMainWindow):
   def initializeGraphs(self):
     self.psigs = [[] for _ in range(8)]  # List to hold 8 signal arrays
     self.pens = [
-      pg.mkPen(color=(255, 0, 0), width=2),
-      pg.mkPen(color=(255, 128, 0), width=2),
-      pg.mkPen(color=(255, 255, 0), width=2),
-      pg.mkPen(color=(0, 255, 0), width=2),
-      pg.mkPen(color=(0, 0, 255), width=2),
-      pg.mkPen(color=(127, 0, 255), width=2),
+      pg.mkPen(color=(0, 255, 255), width=2),
       pg.mkPen(color=(255, 0, 255), width=2),
-      pg.mkPen(color=(0, 255, 255), width=2)
+      pg.mkPen(color=(127, 0, 255), width=2),
+      pg.mkPen(color=(0, 0, 255), width=2),
+      pg.mkPen(color=(0, 255, 0), width=2),
+      pg.mkPen(color=(255, 255, 0), width=2),
+      pg.mkPen(color=(255, 128, 0), width=2),
+      pg.mkPen(color=(255, 0, 0), width=2)
     ]
     # Initialize plots for each signal
     self.plots = [self.biggraph.plot(pen=self.pens[i]) for i in range(8)]
@@ -81,6 +82,15 @@ class graphWindow(QtWidgets.QMainWindow):
     # Disable y-axis changing from scrolling
     view_box = self.biggraph.getViewBox()
     view_box.setMouseEnabled(x=True, y=False)
+
+    # Adding a vertical line following the cursor
+    self.vLine = InfiniteLine(angle=90, movable=False)  # Vertical line
+    self.textItem = TextItem(anchor=(0,1))  # Text item for displaying the value
+    self.biggraph.addItem(self.vLine, ignoreBounds=True)  # Add vertical line to the plot
+    self.biggraph.addItem(self.textItem)  # Add text item to the plot
+
+    # Handling mouse movement
+    self.proxy = pg.SignalProxy(self.biggraph.scene().sigMouseMoved, rateLimit=60, slot=self.mouseMoved)
     
   #Plots the 8 graphs according to where they should be located
   #The value inserted should be which graph to plot and what to plot
@@ -160,6 +170,45 @@ class graphWindow(QtWidgets.QMainWindow):
         numflip = numflip + 1
       prev = curr
     return numflip
+  
+  ''' Handles mouse movement for vertical line '''
+  def mouseMoved(self, evt):
+    pos = evt[0]  # Extract mouse position
+    if self.biggraph.sceneBoundingRect().contains(pos):
+      mousePoint = self.biggraph.plotItem.vb.mapSceneToView(pos)
+      self.vLine.setPos(mousePoint.x())  # Update the vertical line position
+      
+      # Get the signal values at this x position
+      x_val, y_signal_values = self.getSignalValueAt(mousePoint.x())
+      
+      # Display the signal values in the GUI
+      self.displayGraphValues(x_val, y_signal_values)
+
+  ''' Returns x coordinate and an array with y signal values at coordinate x. 
+  If it's out of bonds, returns an empty array. '''
+  def getSignalValueAt(self, x):
+    # Implement logic to find and return the signal value at or nearest to x
+    idx = int(x)  # Convert x to an index
+
+    y_signal_values = []
+
+    if 0 <= idx < len(self.psigs[0]):
+      for signal in self.psigs:
+        # Append the y-value at idx from each signal
+        y_signal_values.append(signal[idx])
+
+    #print(y_signal_values)
+    return idx, y_signal_values
+  
+  ''' Sets the y values text box to the provided signal values.'''
+  def displayGraphValues(self, x, y_signal_values):
+    # Convert to a string
+    y_values_str = ', '.join(f"{y}" for y in y_signal_values)
+    x_str = str(x)
+
+    # Set the text on the GUI
+    self.y_val.setText(y_values_str)
+    self.x_val.setText(x_str)
   
 
   '''Initialize graphs with placeholders'''
