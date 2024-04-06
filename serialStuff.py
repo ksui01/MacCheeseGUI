@@ -25,6 +25,7 @@ def try_read_from_serial(ser):
         print(f"An unexpected error occurred: {e}")
         return False
 
+
 def setupSerial(serial_port, baud_rate):
     ser = serial.Serial(serial_port, baud_rate, timeout=1)
     return ser
@@ -50,8 +51,6 @@ def convertByteToBinary(byte_read):
 
     # pad with zeros to get 8 bits
     return binary_representation.zfill(8)
-
-
 
 
 def updateArrays(ser, psig1, psig2, psig3, psig4, psig5, psig6, psig7, psig8):

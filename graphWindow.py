@@ -5,23 +5,46 @@ from random import randint
 
 from PyQt6.uic import loadUi
 from PyQt6 import QtWidgets, QtCore
+from PyQt6.QtCore import QTimer
+
 import pyqtgraph as pg
 
 class graphWindow(QtWidgets.QMainWindow):
   def __init__(self, widget=None, ser=None, *args, **kwargs):
     super(graphWindow, self).__init__(*args, **kwargs)
 
+    # Set the widget
+    self.widget = widget 
+
     # Set the serial port
     self.ser = ser
 
+    # Initialize timer for graph
+    self.timer = QTimer()
+    self.timer.timeout.connect(self.updateData)
+    self.timer.start(100) # adjust interval
+
     loadUi("biggraphwindow.ui", self)
-    self.pushButton.clicked.connect(self.gotoReadMe)
+    self.pushButton.clicked.connect(self.gotoLandingPage)
  
     #graph settings
     self.initializeGraphs()
+  def updateData(self):
+    # Assuming updateArrays and readByteFromSerial are defined elsewhere
+    self.psigs = serialStuff.updateArrays(self.ser, *self.psigs)
+    
+    # Limit the size of each array to the last 200 data points
+    self.psigs = [psig[-200:] for psig in self.psigs]  # Trim each array
+    
+    # Vertical offset 
+    offset = 2
 
+    for i, plot in enumerate(self.plots):
+      offset_data = [y + i * offset for y in self.psigs[i]]
+      plot.setData(offset_data)  # Update each plot with new data
+  
   @QtCore.pyqtSlot()
-  def gotoReadMe(self):
+  def gotoLandingPage(self):
     self.widget.setCurrentIndex(self.widget.currentIndex() - 1)
 
   # Sets the serial port this graph is reading from.
@@ -34,78 +57,30 @@ class graphWindow(QtWidgets.QMainWindow):
 
   ''' Initialize graphs'''
   def initializeGraphs(self):
-    #self.biggraph.setBackground("w")
-
-    # Setup pens
-    RedPen = pg.mkPen(color=(255, 0, 0), width=2)
-    OrangePen = pg.mkPen(color=(255, 128, 0), width=2)
-    YellowPen = pg.mkPen(color=(255, 255, 0), width=2)
-    GreenPen = pg.mkPen(color=(0, 255, 0), width=2)
-    BluePen = pg.mkPen(color=(0, 0, 255), width=2)
-    PurplePen = pg.mkPen(color=(127, 0, 255), width=2)
-    PinkPen = pg.mkPen(color=(255, 0, 255), width=2)
-    CyanPen = pg.mkPen(color=(0, 255, 255), width=2)
-
-    # Setup the signal arrays
-    psig1 = []
-    psig2 = []
-    psig3 = []
-    psig4 = []
-    psig5 = []
-    psig6 = []
-    psig7 = []
-    psig8 = []
-
-    # loop for 5s
-    start_time = time.time()
-    duration = 5
-    while (time.time() - start_time) < duration:
-      # Update arrays
-      psig1, psig2, psig3, psig4, psig5, psig6, psig7, psig8 = serialStuff.updateArrays(self.ser, psig1, psig2, psig3, psig4, psig5, psig6, psig7, psig8)
-
-    self.time = list(range(10))
-
-    clk = self.plotClk(psig1)
-    sig = self.plotSignal(psig1)
-    self.biggraph.plot(clk, sig, pen=PurplePen)
-
-    clk = self.plotClk(psig2)
-    sig = self.plotSignal(psig2)
-    sig = self.plotBig(sig, 7)
-    self.biggraph.plot(clk, sig, pen=PinkPen)
-
-    clk = self.plotClk(psig3)
-    sig = self.plotSignal(psig3)
-    sig = self.plotBig(sig, 6)
-    self.biggraph.plot(clk, sig, pen=GreenPen)
-
-    clk = self.plotClk(psig4)
-    sig = self.plotSignal(psig4)
-    sig = self.plotBig(sig, 5)
-    self.biggraph.plot(clk, sig, pen=OrangePen)
-
-    clk = self.plotClk(psig5)
-    sig = self.plotSignal(psig5)
-    sig = self.plotBig(sig, 4)
-    self.biggraph.plot(clk, sig, pen=CyanPen)
-
-    clk = self.plotClk(psig6)
-    sig = self.plotSignal(psig6)
-    sig = self.plotBig(sig, 3)
-    self.biggraph.plot(clk, sig, pen=YellowPen)
-    
-    clk = self.plotClk(psig7)
-    sig = self.plotSignal(psig7)
-    sig = self.plotBig(sig, 2)
-    self.biggraph.plot(clk, sig, pen=BluePen)
-
-    clk = self.plotClk(psig8)
-    sig = self.plotSignal(psig8)
-    sig = self.plotBig(sig, 1)
-    self.biggraph.plot(clk, sig, pen=RedPen)
-
-    self.biggraph.setRange(yRange=[1,15])
+    self.psigs = [[] for _ in range(8)]  # List to hold 8 signal arrays
+    self.pens = [
+      pg.mkPen(color=(255, 0, 0), width=2),
+      pg.mkPen(color=(255, 128, 0), width=2),
+      pg.mkPen(color=(255, 255, 0), width=2),
+      pg.mkPen(color=(0, 255, 0), width=2),
+      pg.mkPen(color=(0, 0, 255), width=2),
+      pg.mkPen(color=(127, 0, 255), width=2),
+      pg.mkPen(color=(255, 0, 255), width=2),
+      pg.mkPen(color=(0, 255, 255), width=2)
+    ]
+    # Initialize plots for each signal
+    self.plots = [self.biggraph.plot(pen=self.pens[i]) for i in range(8)]
+    self.biggraph.setRange(yRange=[1, 15])
     self.biggraph.showGrid(x=True, y=False)
+
+    # Remove the tick labels of y-axis
+    y_axis = self.biggraph.getAxis('left')
+    y_axis.setStyle(tickTextOffset=0)
+    y_axis.setTicks([]) 
+
+    # Disable y-axis changing from scrolling
+    view_box = self.biggraph.getViewBox()
+    view_box.setMouseEnabled(x=True, y=False)
     
   #Plots the 8 graphs according to where they should be located
   #The value inserted should be which graph to plot and what to plot
