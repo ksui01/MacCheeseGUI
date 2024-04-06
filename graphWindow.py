@@ -202,13 +202,28 @@ class graphWindow(QtWidgets.QMainWindow):
   
   ''' Sets the y values text box to the provided signal values.'''
   def displayGraphValues(self, x, y_signal_values):
-    # Convert to a string
-    y_values_str = ', '.join(f"{y}" for y in y_signal_values)
-    x_str = str(x)
+    # Define the colors for each y-value
+    colors = [
+        (0, 255, 255),
+        (255, 0, 255),
+        (127, 0, 255),
+        (0, 0, 255),
+        (0, 255, 0),
+        (255, 255, 0),
+        (255, 128, 0),
+        (255, 0, 0)
+    ]
+    
+    # HTML string with y-values in their respective colors
+    y_values_html = ''.join(f'<span style="color: rgb{colors[i]};">{y}</span>, '
+                            for i, y in enumerate(y_signal_values))
+    
+    # Trim the trailing comma and space
+    y_values_html = y_values_html.rstrip(', ')
 
-    # Set the text on the GUI
-    self.y_val.setText(y_values_str)
-    self.x_val.setText(x_str)
+    # Set the QLabel text
+    self.y_val.setText(y_values_html)
+    self.x_val.setText(str(x))
   
 
   '''Initialize graphs with placeholders'''

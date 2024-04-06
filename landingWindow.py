@@ -40,7 +40,7 @@ class landingWindow(QtWidgets.QDialog):
         print(f"Selected port: {selectedPort}")
 
         # Setup serial
-        ser = serialStuff.setupSerial(selectedPort, 38400)
+        ser = serialStuff.setupSerial(selectedPort, 230400)
 
         # Attempts to read from serial
         if(serialStuff.try_read_from_serial(ser)):
