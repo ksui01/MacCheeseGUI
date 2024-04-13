@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>800</width>
+    <width>825</width>
     <height>670</height>
    </rect>
   </property>
@@ -18,17 +18,18 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>30</y>
+      <y>40</y>
       <width>101</width>
-      <height>561</height>
+      <height>551</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout">
      <item>
       <widget class="QLabel" name="label_3">
        <property name="styleSheet">
-        <string notr="true">border-top: 2px solid black;
-border-bottom: 2px solid black;</string>
+        <string notr="true">border-top: 1px solid black;
+border-bottom: 1px solid black;
+border-left: 1px solid black;</string>
        </property>
        <property name="text">
         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot; style=&quot;color: rgb(255, 0, 0);&quot;&gt;Signal 1&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;
@@ -38,6 +39,11 @@ border-bottom: 2px solid black;</string>
      </item>
      <item>
       <widget class="QLabel" name="label_2">
+       <property name="styleSheet">
+        <string notr="true">border-top: 1px solid black;
+border-bottom: 1px solid black;
+border-left: 1px solid black;</string>
+       </property>
        <property name="text">
         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot; style=&quot;color: rgb(255, 128, 0);&quot;&gt;Signal 2&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;
 </string>
@@ -46,6 +52,11 @@ border-bottom: 2px solid black;</string>
      </item>
      <item>
       <widget class="QLabel" name="label">
+       <property name="styleSheet">
+        <string notr="true">border-top: 1px solid black;
+border-bottom: 1px solid black;
+border-left: 1px solid black;</string>
+       </property>
        <property name="text">
         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot; style=&quot;color: rgb(255, 255, 0);&quot;&gt;Signal 3&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;
 </string>
@@ -54,6 +65,11 @@ border-bottom: 2px solid black;</string>
      </item>
      <item>
       <widget class="QLabel" name="label_4">
+       <property name="styleSheet">
+        <string notr="true">border-top: 1px solid black;
+border-bottom: 1px solid black;
+border-left: 1px solid black;</string>
+       </property>
        <property name="text">
         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot; style=&quot;color: rgb(0, 255, 0);&quot;&gt;Signal 4&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;
 </string>
@@ -62,6 +78,11 @@ border-bottom: 2px solid black;</string>
      </item>
      <item>
       <widget class="QLabel" name="label_5">
+       <property name="styleSheet">
+        <string notr="true">border-top: 1px solid black;
+border-bottom: 1px solid black;
+border-left: 1px solid black;</string>
+       </property>
        <property name="text">
         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot; style=&quot;color: rgb(0, 0, 255);&quot;&gt;Signal 5&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;
 </string>
@@ -70,6 +91,11 @@ border-bottom: 2px solid black;</string>
      </item>
      <item>
       <widget class="QLabel" name="label_7">
+       <property name="styleSheet">
+        <string notr="true">border-top: 1px solid black;
+border-bottom: 1px solid black;
+border-left: 1px solid black;</string>
+       </property>
        <property name="text">
         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot; style=&quot;color: rgb(127, 0, 255);&quot;&gt;Signal 6&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;
 </string>
@@ -78,6 +104,11 @@ border-bottom: 2px solid black;</string>
      </item>
      <item>
       <widget class="QLabel" name="label_8">
+       <property name="styleSheet">
+        <string notr="true">border-top: 1px solid black;
+border-bottom: 1px solid black;
+border-left: 1px solid black;</string>
+       </property>
        <property name="text">
         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot; style=&quot;color: rgb(255, 0, 255);&quot;&gt;Signal 7&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;
 </string>
@@ -86,6 +117,11 @@ border-bottom: 2px solid black;</string>
      </item>
      <item>
       <widget class="QLabel" name="label_6">
+       <property name="styleSheet">
+        <string notr="true">border-top: 1px solid black;
+border-bottom: 1px solid black;
+border-left: 1px solid black;</string>
+       </property>
        <property name="text">
         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p align=&quot;center&quot; style=&quot;color: rgb(0, 255, 255);&quot;&gt;Signal 8&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;
 </string>
@@ -138,47 +174,51 @@ border-bottom: 2px solid black;</string>
     <property name="geometry">
      <rect>
       <x>110</x>
-      <y>30</y>
+      <y>40</y>
       <width>681</width>
-      <height>561</height>
+      <height>571</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="graphLayout">
      <item>
-      <widget class="PlotWidget" name="biggraph" native="true"/>
+      <widget class="PlotWidget" name="biggraph" native="true">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+      </widget>
      </item>
     </layout>
    </widget>
    <widget class="QLabel" name="label_9">
     <property name="geometry">
      <rect>
-      <x>370</x>
+      <x>430</x>
       <y>5</y>
-      <width>58</width>
+      <width>16</width>
       <height>21</height>
      </rect>
     </property>
     <property name="text">
-     <string>X (time):</string>
+     <string>X:</string>
     </property>
    </widget>
    <widget class="QLabel" name="label_10">
     <property name="geometry">
      <rect>
-      <x>490</x>
+      <x>510</x>
       <y>5</y>
-      <width>61</width>
+      <width>21</width>
       <height>21</height>
      </rect>
     </property>
     <property name="text">
-     <string>Y (values):</string>
+     <string>Y:</string>
     </property>
    </widget>
    <widget class="QLineEdit" name="x_val">
     <property name="geometry">
      <rect>
-      <x>430</x>
+      <x>450</x>
       <y>0</y>
       <width>51</width>
       <height>31</height>
@@ -191,9 +231,9 @@ border-bottom: 2px solid black;</string>
    <widget class="QLabel" name="y_val">
     <property name="geometry">
      <rect>
-      <x>560</x>
+      <x>530</x>
       <y>0</y>
-      <width>211</width>
+      <width>121</width>
       <height>31</height>
      </rect>
     </property>
@@ -204,9 +244,9 @@ border-bottom: 2px solid black;</string>
    <widget class="QLineEdit" name="x_val_2">
     <property name="geometry">
      <rect>
-      <x>550</x>
+      <x>530</x>
       <y>0</y>
-      <width>231</width>
+      <width>121</width>
       <height>31</height>
      </rect>
     </property>
@@ -214,6 +254,46 @@ border-bottom: 2px solid black;</string>
      <bool>true</bool>
     </property>
    </widget>
+   <widget class="QLabel" name="label_11">
+    <property name="geometry">
+     <rect>
+      <x>660</x>
+      <y>5</y>
+      <width>21</width>
+      <height>21</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>∆Y:</string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="y_delta_val">
+    <property name="geometry">
+     <rect>
+      <x>680</x>
+      <y>0</y>
+      <width>111</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string/>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="x_val_3">
+    <property name="geometry">
+     <rect>
+      <x>680</x>
+      <y>0</y>
+      <width>111</width>
+      <height>31</height>
+     </rect>
+    </property>
+    <property name="readOnly">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <zorder>x_val_3</zorder>
    <zorder>x_val_2</zorder>
    <zorder>verticalLayoutWidget</zorder>
    <zorder>horizontalLayoutWidget</zorder>
@@ -222,6 +302,8 @@ border-bottom: 2px solid black;</string>
    <zorder>label_10</zorder>
    <zorder>x_val</zorder>
    <zorder>y_val</zorder>
+   <zorder>label_11</zorder>
+   <zorder>y_delta_val</zorder>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>

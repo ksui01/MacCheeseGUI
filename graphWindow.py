@@ -10,7 +10,7 @@ from PyQt6 import QtWidgets, QtCore
 from PyQt6.QtCore import QTimer
 
 import pyqtgraph as pg
-from pyqtgraph import InfiniteLine, TextItem
+from pyqtgraph import InfiniteLine, TextItem, LinearRegionItem
 
 
 
@@ -66,14 +66,14 @@ class graphWindow(QtWidgets.QMainWindow):
 
   """Handler for the start button click event."""
   def startClicked(self):
+      # Print message waiting
+      self.consoleLog("Loading...")
+
       # Setup serial
       self.ser = serialStuff.setupSerial(self.selectedPort, 230400)
 
       # Send a serial signal "S"
       self.ser.write(b"S")
-
-      # Print message waiting
-      self.consoleLog("Loading...")
 
       # Wait 3s
       time.sleep(3)
@@ -100,7 +100,7 @@ class graphWindow(QtWidgets.QMainWindow):
 
       
       # Vertical offset 
-      offset = 2
+      offset = 2.05
 
       for i, plot in enumerate(self.plots):
         offset_data = [y + i * offset for y in self.psigs[i]]
@@ -124,6 +124,11 @@ class graphWindow(QtWidgets.QMainWindow):
     self.timer.timeout.connect(self.updateData)
     self.timer.start(10) # adjust interval
 
+    # Track horizontal lines and clicks
+    self.click_count = 0
+    self.lines = []
+
+    # Colors
     self.psigs = [[] for _ in range(8)]  # List to hold 8 signal arrays
     self.pens = [
       pg.mkPen(color=(0, 255, 255), width=2),
@@ -135,9 +140,10 @@ class graphWindow(QtWidgets.QMainWindow):
       pg.mkPen(color=(255, 128, 0), width=2),
       pg.mkPen(color=(255, 0, 0), width=2)
     ]
+
     # Initialize plots for each signal
     self.plots = [self.biggraph.plot(pen=self.pens[i]) for i in range(8)]
-    self.biggraph.setRange(yRange=[1, 15])
+    self.biggraph.setRange(yRange=[0, 15])
     self.biggraph.showGrid(x=True, y=False)
 
     # Remove the tick labels of y-axis
@@ -155,8 +161,48 @@ class graphWindow(QtWidgets.QMainWindow):
     self.biggraph.addItem(self.vLine, ignoreBounds=True)  # Add vertical line to the plot
     self.biggraph.addItem(self.textItem)  # Add text item to the plot
 
-    # Handling mouse movement
+    # Handling mouse movement and clicks
+    #self.proxyClick = pg.SignalProxy(self.biggraph.scene().sigMouseClicked, rateLimit=60, slot=self.onClick)
+    self.biggraph.scene().sigMouseClicked.connect(self.mouseClicked)
     self.proxy = pg.SignalProxy(self.biggraph.scene().sigMouseMoved, rateLimit=60, slot=self.mouseMoved)
+
+  ''' Handle a mousle clicked on the big graph.'''
+  def mouseClicked(self, event):
+    pos = event.scenePos()
+    if self.biggraph.sceneBoundingRect().contains(pos):
+      mousePoint = self.biggraph.plotItem.vb.mapSceneToView(pos)
+      self.addVerticalLine(mousePoint.x())
+
+  def addVerticalLine(self, x):
+    # First click - add the first line
+    if self.click_count == 0:
+      self.firstLine = InfiniteLine(angle=90, movable=False, pos=x)
+      self.biggraph.addItem(self.firstLine, ignoreBounds=True)
+      self.click_count = 1
+
+    # Second click - add the second line
+    elif self.click_count == 1:
+      self.secondLine = InfiniteLine(angle=90, movable=False, pos=x)
+      self.biggraph.addItem(self.secondLine, ignoreBounds=True)
+      self.click_count = 2
+
+      # Highlight the area between the lines
+      self.region = LinearRegionItem(values=(self.firstLine.value(), self.secondLine.value()), movable=False)
+      self.biggraph.addItem(self.region, ignoreBounds=True)
+
+      # Calculate and print the difference
+      difference = abs(self.secondLine.value() - self.firstLine.value())
+      diff_round = round(difference, 2) # round it to 2
+      self.y_delta_val.setText(str(diff_round))
+
+    # Third click, reset 
+    elif self.click_count == 2:
+      self.biggraph.removeItem(self.firstLine)
+      self.biggraph.removeItem(self.secondLine)
+      self.biggraph.removeItem(self.region)
+      self.y_delta_val.setText("")
+      self.click_count = 0
+    
     
   #Plots the 8 graphs according to where they should be located
   #The value inserted should be which graph to plot and what to plot

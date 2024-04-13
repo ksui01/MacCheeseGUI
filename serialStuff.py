@@ -62,7 +62,7 @@ def readByteFromSerial(ser):
             ser.close()
             return None
     else:
-        print("No bytes waiting to be read")
+        #print("No bytes waiting to be read")
         return None
         
 
