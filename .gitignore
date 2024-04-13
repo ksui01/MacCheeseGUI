@@ -1,0 +1,8 @@
+build/
+GUI/
+MacExecutable/
+venv/
+WORK/
+MacExecutable.zip
+compilingMac.txt
+main.spec
