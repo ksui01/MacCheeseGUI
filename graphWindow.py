@@ -1,5 +1,6 @@
 import time
 import serialStuff
+import resourcePath
 import serial.tools.list_ports
 from random import randint
 
@@ -18,7 +19,9 @@ class graphWindow(QtWidgets.QMainWindow):
   def __init__(self, widget=None, selectedPort=None, *args, **kwargs):
     super(graphWindow, self).__init__(*args, **kwargs)
 
-    loadUi("biggraphwindow.ui", self)
+    #loadUi("biggraphwindow.ui", self)
+    PATH = resourcePath.resource_path("bigGraphWindow.ui")
+    loadUi(PATH, self)
 
     # Set the widget
     self.widget = widget 

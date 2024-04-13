@@ -1,4 +1,4 @@
-import sys
+import resourcePath
 import serial
 import serialStuff
 import serial.tools.list_ports
@@ -18,7 +18,8 @@ class landingWindow(QtWidgets.QDialog):
         self.widget = widget
         
         # Load UI from ui file
-        loadUi("landingWindow.ui", self)
+        PATH = resourcePath.resource_path("landingWindow.ui")
+        loadUi(PATH, self)
 
         # refresh COM ports
         self.refreshPorts()
@@ -26,6 +27,8 @@ class landingWindow(QtWidgets.QDialog):
         # handles click on Start button
         self.startButton.clicked.connect(self.startClicked)
         self.refreshButton.clicked.connect(self.refreshPorts)
+
+    
     
     """Refreshes the list of serial ports."""
     def refreshPorts(self):
