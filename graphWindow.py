@@ -3,6 +3,8 @@ import serialStuff
 import serial.tools.list_ports
 from random import randint
 
+from PyQt6.QtWidgets import QApplication, QWidget, QMessageBox
+
 from PyQt6.uic import loadUi
 from PyQt6 import QtWidgets, QtCore
 from PyQt6.QtCore import QTimer
@@ -10,54 +12,118 @@ from PyQt6.QtCore import QTimer
 import pyqtgraph as pg
 from pyqtgraph import InfiniteLine, TextItem
 
+
+
 class graphWindow(QtWidgets.QMainWindow):
-  def __init__(self, widget=None, ser=None, *args, **kwargs):
+  def __init__(self, widget=None, selectedPort=None, *args, **kwargs):
     super(graphWindow, self).__init__(*args, **kwargs)
+
+    loadUi("biggraphwindow.ui", self)
 
     # Set the widget
     self.widget = widget 
 
+    # Get the selected port
+    self.selectedPort = selectedPort
+
+    # State of the graph (paused or not)
+    self.paused = False 
+
+    # Start plotting from index 0
+    self.x = 0
+
+    # Print message to user
+    self.consoleLog("Press start to begin!")
+
     # Set the serial port
-    self.ser = ser
+    # self.ser = ser
 
-    # Initialize timer for graph
-    self.timer = QTimer()
-    self.timer.timeout.connect(self.updateData)
-    self.timer.start(100) # adjust interval
+    # Setup buttons
+    self.backButton.clicked.connect(self.gotoLandingPage)
+    self.playButton.clicked.connect(self.startClicked)
+    #self.pauseButton.clicked.connect(self.pauseFun)
+    self.stopButton.clicked.connect(self.stopFun)
 
-    loadUi("biggraphwindow.ui", self)
-    self.pushButton.clicked.connect(self.gotoLandingPage)
- 
-    #graph settings
-    self.initializeGraphs()
+  ''' Stop the simulation '''
+  def stopFun(self):
+    self.consoleLog("Stopping")
+    # Send a serial signal "S"
+    self.ser.write(b"Q")
+
+  ''' Pauses the simulation '''
+  # def pauseFun(self):
+  #   self.pause = True
+  #   print(f"Setting pause to {self.pause}")
+
+  ''' Unpauses the simulation '''
+  # def unpauseFun(self):
+  #   print("Unpausing")
+  #   self.pause = False
+
+  ''' Display messages to user in a box in the GUI. '''
+  def consoleLog(self, msg):
+    self.console.setText(msg)
+
+  """Handler for the start button click event."""
+  def startClicked(self):
+      # Setup serial
+      self.ser = serialStuff.setupSerial(self.selectedPort, 230400)
+
+      # Send a serial signal "S"
+      self.ser.write(b"S")
+
+      # Print message waiting
+      self.consoleLog("Loading...")
+
+      # Wait 3s
+      time.sleep(3)
+
+      # Initialize graphs
+      self.initializeGraphs()
+  
+  """ Error dialog. Input title and message. """
+  def errorDialog(self, title, msg):
+      # Create the message box
+      QMessageBox.critical(self, title, msg)
+
   def updateData(self):
-    # Assuming updateArrays and readByteFromSerial are defined elsewhere
-    self.psigs = serialStuff.updateArrays(self.ser, *self.psigs)
-    
-    # Limit the size of each array to the last 200 data points
-    self.psigs = [psig[-200:] for psig in self.psigs]  # Trim each array
-    
-    # Vertical offset 
-    offset = 2
+    #print(f"Updating. Paused: {self.paused}")
+    self.consoleLog("Reading...")
+    if (self.paused == False):
+      self.psigs = serialStuff.updateArrays(self.ser, *self.psigs)
+      
+      
+      # Automatically stop plotting if too many numbers
+      if (len(self.psigs[0]) > 100000):
+        print("Array is too big. Stopping.")
+        self.stopFun()
 
-    for i, plot in enumerate(self.plots):
-      offset_data = [y + i * offset for y in self.psigs[i]]
-      plot.setData(offset_data)  # Update each plot with new data
+      
+      # Vertical offset 
+      offset = 2
+
+      for i, plot in enumerate(self.plots):
+        offset_data = [y + i * offset for y in self.psigs[i]]
+        plot.setData(offset_data)  # Update each plot with new data
+
   
   @QtCore.pyqtSlot()
   def gotoLandingPage(self):
     self.widget.setCurrentIndex(self.widget.currentIndex() - 1)
 
   # Sets the serial port this graph is reading from.
-  def setSerialPort(ser):
+  def setSerialPort(self, ser):
     self.ser = ser
-
-  # This is supposed to update the graph at each additional cycle. In theory
-  def updateGraphs(self, psig1, psig2, psig3, psig4, psig5, psig6, psig7, psig8):
-    pass
 
   ''' Initialize graphs'''
   def initializeGraphs(self):
+    print("Initializing graphs")
+
+    # Initialize timer for graph
+    self.timer = QTimer()
+    self.timer.timeout.connect(self.updateData)
+    self.timer.start(10) # adjust interval
+
     self.psigs = [[] for _ in range(8)]  # List to hold 8 signal arrays
     self.pens = [
       pg.mkPen(color=(0, 255, 255), width=2),

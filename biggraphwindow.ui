@@ -97,31 +97,38 @@ border-bottom: 2px solid black;</string>
    <widget class="QWidget" name="horizontalLayoutWidget">
     <property name="geometry">
      <rect>
-      <x>110</x>
+      <x>10</x>
       <y>-3</y>
-      <width>251</width>
-      <height>31</height>
+      <width>351</width>
+      <height>41</height>
      </rect>
     </property>
     <layout class="QHBoxLayout" name="horizontalLayout">
      <item>
+      <widget class="QToolButton" name="backButton">
+       <property name="text">
+        <string>Back</string>
+       </property>
+      </widget>
+     </item>
+     <item>
       <widget class="QToolButton" name="playButton">
        <property name="text">
-        <string>Play</string>
+        <string>Start</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QToolButton" name="toolButton_3">
+      <widget class="QToolButton" name="stopButton">
        <property name="text">
-        <string>Pause</string>
+        <string>Stop</string>
        </property>
       </widget>
      </item>
      <item>
-      <widget class="QToolButton" name="toolButton">
-       <property name="text">
-        <string>...</string>
+      <widget class="QLineEdit" name="console">
+       <property name="readOnly">
+        <bool>true</bool>
        </property>
       </widget>
      </item>
@@ -141,19 +148,6 @@ border-bottom: 2px solid black;</string>
       <widget class="PlotWidget" name="biggraph" native="true"/>
      </item>
     </layout>
-   </widget>
-   <widget class="QPushButton" name="pushButton">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>0</y>
-      <width>91</width>
-      <height>31</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>Back</string>
-    </property>
    </widget>
    <widget class="QLabel" name="label_9">
     <property name="geometry">
@@ -194,19 +188,6 @@ border-bottom: 2px solid black;</string>
      <bool>true</bool>
     </property>
    </widget>
-   <widget class="QLineEdit" name="empty_box">
-    <property name="geometry">
-     <rect>
-      <x>200</x>
-      <y>590</y>
-      <width>211</width>
-      <height>21</height>
-     </rect>
-    </property>
-    <property name="readOnly">
-     <bool>true</bool>
-    </property>
-   </widget>
    <widget class="QLabel" name="y_val">
     <property name="geometry">
      <rect>
@@ -217,7 +198,7 @@ border-bottom: 2px solid black;</string>
      </rect>
     </property>
     <property name="text">
-     <string>TextLabel</string>
+     <string/>
     </property>
    </widget>
    <widget class="QLineEdit" name="x_val_2">
@@ -237,28 +218,10 @@ border-bottom: 2px solid black;</string>
    <zorder>verticalLayoutWidget</zorder>
    <zorder>horizontalLayoutWidget</zorder>
    <zorder>verticalLayoutWidget_2</zorder>
-   <zorder>pushButton</zorder>
    <zorder>label_9</zorder>
    <zorder>label_10</zorder>
    <zorder>x_val</zorder>
-   <zorder>empty_box</zorder>
    <zorder>y_val</zorder>
-  </widget>
-  <widget class="QMenuBar" name="menubar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>800</width>
-     <height>24</height>
-    </rect>
-   </property>
-   <widget class="QMenu" name="menuFile">
-    <property name="title">
-     <string>File</string>
-    </property>
-   </widget>
-   <addaction name="menuFile"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
  </widget>

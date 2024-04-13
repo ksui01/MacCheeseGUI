@@ -16,7 +16,7 @@
   <widget class="QPushButton" name="startButton">
    <property name="geometry">
     <rect>
-     <x>510</x>
+     <x>500</x>
      <y>540</y>
      <width>131</width>
      <height>31</height>
@@ -73,6 +73,19 @@
    </property>
    <property name="text">
     <string>Select the port your upduino is connected to:</string>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="refreshButton">
+   <property name="geometry">
+    <rect>
+     <x>640</x>
+     <y>540</y>
+     <width>21</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>⟳</string>
    </property>
   </widget>
  </widget>

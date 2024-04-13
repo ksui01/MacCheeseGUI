@@ -1,42 +1,70 @@
 import serial
 
-'''Tries to read from a serial port. If it fails, returns False.'''
-def try_read_from_serial(ser):
+# Check if this is a valid serial port.
+def check_serial_port(port):
     try:
-        # Attempt to read a bit from the serial port
-        bit = ser.read(size=1)
-        
-        # If it's empty, return False
-        if (bit == b''):
-            print(f"Empty serial input: {bit}")
-            return False
-
-        # If there is a bit, return true 
-        print(f"Read from serial port: {bit}")
+        # Attempt to open the serial port
+        ser = serial.Serial(port)
+        ser.close()  # Immediately close the port if it was successfully opened
+        print(f"Serial port {port} is valid.")
         return True
-    
-    # Handles errors
     except serial.SerialException as e:
-        # Handle errors in reading from serial port
-        print(f"Error reading from serial port: {e}")
+        # Handle errors in opening the serial port
+        print(f"Error opening serial port {port}: {e}")
         return False
     except Exception as e:
         # Handle other possible exceptions
-        print(f"An unexpected error occurred: {e}")
+        print(f"An unexpected error occurred when checking {port}: {e}")
         return False
+# '''Tries to read from a serial port. If it fails, returns False.'''
+# def try_read_from_serial(ser):
+#     if (ser.in_waiting > 0):
+#         try:
+#             # Attempt to read a bit from the serial port
+#             bit = ser.read(size=1)
+            
+#             # If it's empty, return False
+#             if (bit == b''):
+#                 print(f"Empty serial input: {bit}")
+#                 return False
+
+#             # If there is a bit, return true 
+#             print(f"Read from serial port: {bit}")
+#             return True
+        
+#         # Handles errors
+#         except serial.SerialException as e:
+#             # Handle errors in reading from serial port
+#             print(f"Error reading from serial port: {e}")
+#             return False
+#         except Exception as e:
+#             # Handle other possible exceptions
+#             print(f"An unexpected error occurred: {e}")
+#             return False
+#     else:
+#         print("No bytes waiting to be read. Bye")
+#         return False
 
 
 def setupSerial(serial_port, baud_rate):
-    ser = serial.Serial(serial_port, baud_rate, timeout=1)
+    ser = serial.Serial(serial_port, baud_rate, timeout=3)
     return ser
 
 
 def readByteFromSerial(ser):
-    try:
-        line = ser.read(size=1)
-    except:
-        ser.close()
-    return line
+    # If there are bytes waiting to be read
+    if (ser.in_waiting > 0):
+        try:
+            line = ser.read(size=1)
+            return line
+        except:
+            print("Error reading byte from serial")
+            ser.close()
+            return None
+    else:
+        print("No bytes waiting to be read")
+        return None
+        
 
 
 '''

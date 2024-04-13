@@ -25,6 +25,7 @@ class landingWindow(QtWidgets.QDialog):
 
         # handles click on Start button
         self.startButton.clicked.connect(self.startClicked)
+        self.refreshButton.clicked.connect(self.refreshPorts)
     
     """Refreshes the list of serial ports."""
     def refreshPorts(self):
@@ -36,21 +37,16 @@ class landingWindow(QtWidgets.QDialog):
     """Handler for the start button click event."""
     def startClicked(self):
         selectedPort = self.portComboBox.currentText()
+        
         # Print selected port
         print(f"Selected port: {selectedPort}")
 
-        # Setup serial
-        ser = serialStuff.setupSerial(selectedPort, 230400)
-
-        # Attempts to read from serial
-        if(serialStuff.try_read_from_serial(ser)):
-            # If it works, go to graph Window
-            self.gotoGraph(ser)
-
-        # If it doesn't work, display error dialog
+        if(serialStuff.check_serial_port(selectedPort)):
+            self.gotoGraph(selectedPort)
         else:
             self.errorDialog("Serial port error", 
-                             "ERROR: Please reconnect your upduino and try again.")
+                        "Please select a valid serial port.")
+
     
     """ Error dialog. Input title and message. """
     def errorDialog(self, title, msg):
@@ -58,9 +54,9 @@ class landingWindow(QtWidgets.QDialog):
         QMessageBox.critical(self, title, msg)
     
     @QtCore.pyqtSlot()
-    def gotoGraph(self, ser):
+    def gotoGraph(self, selectedPort):
         # Setup graph window
-        graph_window = graphWindow.graphWindow(widget=self.widget, ser=ser)
+        graph_window = graphWindow.graphWindow(widget=self.widget, selectedPort=selectedPort)
         self.widget.addWidget(graph_window)
 
         # Go to graph window
