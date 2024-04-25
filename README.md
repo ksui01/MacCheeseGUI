@@ -1,5 +1,6 @@
 # MacCheeseGUI
 Tufts Senior Design Project: FPGA Logic Analyzer
+
 Written in Python using PyQt6. 
 
 # How to run it:
@@ -9,7 +10,7 @@ Written in Python using PyQt6.
 2. Create a new environment:
   python -m venv venv
 
-3. Activate environment
+3. Activate environment:
   source venv/bin/activate (macOS)
   \venv\Scripts\activate (windows)
 
