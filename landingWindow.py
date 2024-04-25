@@ -4,11 +4,10 @@ import serialStuff
 import serial.tools.list_ports
 import graphWindow
 
-# Error dialog stuff
-from PyQt6.QtWidgets import QApplication, QWidget, QMessageBox
-
+from PyQt6.QtWidgets import QMessageBox
 from PyQt6.uic import loadUi
 from PyQt6 import QtWidgets, QtCore
+from PyQt6.QtGui import QPixmap
 
 class landingWindow(QtWidgets.QDialog):
     def __init__(self, widget=None, *args, **kwargs):
@@ -23,6 +22,12 @@ class landingWindow(QtWidgets.QDialog):
 
         # refresh COM ports
         self.refreshPorts()
+
+        # loads background image
+        image_path = resourcePath.resource_path("background.png")
+        pixmap = QPixmap(image_path)
+        if not pixmap.isNull():
+            self.background.setPixmap(pixmap)
 
         # handles click on Start button
         self.startButton.clicked.connect(self.startClicked)
@@ -40,6 +45,7 @@ class landingWindow(QtWidgets.QDialog):
     """Handler for the start button click event."""
     def startClicked(self):
         selectedPort = self.portComboBox.currentText()
+
         
         # Print selected port
         print(f"Selected port: {selectedPort}")

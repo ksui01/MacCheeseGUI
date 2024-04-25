@@ -4,6 +4,7 @@ GUI/
 MacExecutable/
 venv/
 WORK/
+DIST/
 MacExecutable.zip
 compilingMac.txt
 main.spec

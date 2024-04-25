@@ -1,10 +1,9 @@
 import time
 import serialStuff
 import resourcePath
-import serial.tools.list_ports
 from random import randint
 
-from PyQt6.QtWidgets import QApplication, QWidget, QMessageBox
+from PyQt6.QtWidgets import QMessageBox
 
 from PyQt6.uic import loadUi
 from PyQt6 import QtWidgets, QtCore
@@ -29,17 +28,18 @@ class graphWindow(QtWidgets.QMainWindow):
     # Get the selected port
     self.selectedPort = selectedPort
 
+    # Initialize the arrays for graphs
+    self.psigs = [[] for _ in range(8)]  # List to hold 8 signal arrays
+
     # State of the graph (paused or not)
     self.paused = False 
+    self.initialized = False
 
     # Start plotting from index 0
     self.x = 0
 
     # Print message to user
     self.consoleLog("Press start to begin!")
-
-    # Set the serial port
-    # self.ser = ser
 
     # Setup buttons
     self.backButton.clicked.connect(self.gotoLandingPage)
@@ -49,7 +49,11 @@ class graphWindow(QtWidgets.QMainWindow):
 
   ''' Stop the simulation '''
   def stopFun(self):
-    self.consoleLog("Stopping")
+    self.consoleLog("Plotting stopped.")
+
+    # Set to paused
+    self.paused = True
+
     # Send a serial signal "S"
     self.ser.write(b"Q")
 
@@ -69,8 +73,14 @@ class graphWindow(QtWidgets.QMainWindow):
 
   """Handler for the start button click event."""
   def startClicked(self):
-      # Print message waiting
-      self.consoleLog("Loading...")
+      self.consoleLog("Starting plots...")
+
+      # Set pause False
+      self.paused = False
+
+      # Cleanup arrays
+      for i in range(8):
+        self.psigs[i].clear()
 
       # Setup serial
       self.ser = serialStuff.setupSerial(self.selectedPort, 230400)
@@ -81,8 +91,9 @@ class graphWindow(QtWidgets.QMainWindow):
       # Wait 3s
       time.sleep(3)
 
-      # Initialize graphs
-      self.initializeGraphs()
+      # Initialize graphs if they haven't been initialized already
+      if (self.initialized == False):
+        self.initializeGraphs()
   
   """ Error dialog. Input title and message. """
   def errorDialog(self, title, msg):
@@ -90,9 +101,9 @@ class graphWindow(QtWidgets.QMainWindow):
       QMessageBox.critical(self, title, msg)
 
   def updateData(self):
-    #print(f"Updating. Paused: {self.paused}")
-    self.consoleLog("Reading...")
     if (self.paused == False):
+      self.consoleLog("Reading...")
+
       self.psigs = serialStuff.updateArrays(self.ser, *self.psigs)
       
       
@@ -112,6 +123,10 @@ class graphWindow(QtWidgets.QMainWindow):
   
   @QtCore.pyqtSlot()
   def gotoLandingPage(self):
+    # Stop the simulation
+    self.stopFun()
+
+    # Go back to landing page
     self.widget.setCurrentIndex(self.widget.currentIndex() - 1)
 
   # Sets the serial port this graph is reading from.
@@ -121,6 +136,9 @@ class graphWindow(QtWidgets.QMainWindow):
   ''' Initialize graphs'''
   def initializeGraphs(self):
     print("Initializing graphs")
+
+    # Set to initialized
+    self.initialized = True
 
     # Initialize timer for graph
     self.timer = QTimer()
@@ -132,7 +150,6 @@ class graphWindow(QtWidgets.QMainWindow):
     self.lines = []
 
     # Colors
-    self.psigs = [[] for _ in range(8)]  # List to hold 8 signal arrays
     self.pens = [
       pg.mkPen(color=(0, 255, 255), width=2),
       pg.mkPen(color=(255, 0, 255), width=2),
