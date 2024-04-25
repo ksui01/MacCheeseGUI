@@ -2,7 +2,11 @@
 Tufts Senior Design Project: FPGA Logic Analyzer. <br>
 Written in Python using PyQt6. 
 
-# How to run it:
+# Downloads
+MacOS: https://drive.google.com/file/d/16-QHJ66DIr_bPqAezycqFF1WI-qpUUme/view?usp=sharing
+Windows: 
+
+# How to run source code:
 1. Make sure you are using Python 3.10.13 <br>
   Run "python --version" to make sure.
 
